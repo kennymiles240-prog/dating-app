@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MeetCute — Find your kind of spark</title>
+  <style>
+    :root {
+      --ink: #30243f;
+      --muted: #81768a;
+      --pink: #ff5f91;
+      --purple: #7556ed;
+      --surface: #fff;
+      --background: #faf7ff;
+      --border: #eee8f5;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 0%, #ffe4ef 0, transparent 30rem),
+        radial-gradient(circle at 100% 10%, #e8e2ff 0, transparent 34rem),
+        var(--background);
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px max(5vw, 22px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 1.35rem;
+      font-weight: 850;
+      letter-spacing: -0.06em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 13px;
+      color: white;
+      background: linear-gradient(135deg, var(--pink), #ff9a69);
+      box-shadow: 0 7px 18px #ff5f9144;
+    }
+
+    .tagline { color: var(--muted); font-size: .9rem; }
+
+    main {
+      width: min(1120px, 92vw);
+      margin: 22px auto 60px;
+    }
+
+    .welcome { margin: 10px 0 26px; }
+    .welcome h1 {
+      margin: 0 0 7px;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      letter-spacing: -.065em;
+    }
+    .welcome p { margin: 0; color: var(--muted); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel, .card, .registration, .call-dialog {
+      border: 1px solid #ffffffcc;
+      border-radius: 24px;
+      background: #ffffffed;
+      box-shadow: 0 16px 50px #50356712;
+    }
+
+    .filters { padding: 22px; }
+    .filters h2 { margin: 0 0 18px; font-size: 1.05rem; }
+    .field { display: grid; gap: 7px; margin: 0 0 15px; }
+    .field label { color: #5d5268; font-size: .84rem; font-weight: 700; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 11px 12px;
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: white;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: #b6a4ff;
+      box-shadow: 0 0 0 3px #7556ed18;
+    }
+    .field textarea { min-height: 95px; resize: vertical; }
+    .range-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 13px;
+      color: white;
+      font-weight: 750;
+      background: linear-gradient(135deg, var(--pink), #ff8a75);
+      box-shadow: 0 8px 18px #ff5f9130;
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .button:hover { transform: translateY(-2px); filter: brightness(1.03); }
+    .button.secondary {
+      color: var(--purple);
+      background: #f0edff;
+      box-shadow: none;
+    }
+    .button.dark {
+      color: white;
+      background: var(--ink);
+      box-shadow: none;
+    }
+    .button.full { width: 100%; }
+
+    .discovery-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 2px 0 16px;
+    }
+    .discovery-head h2 { margin: 0; font-size: 1.2rem; }
+    .count { color: var(--muted); font-size: .9rem; }
+
+    .profiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+      gap: 18px;
+    }
+
+    .card { overflow: hidden; }
+    .photo-wrap { position: relative; height: 260px; background: #f1eafa; }
+    .photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .online {
+      position: absolute;
+      top: 13px;
+      left: 13px;
+      padding: 7px 10px;
+      border: 1px solid #ffffffaa;
+      border-radius: 99px;
+      color: #fff;
+      background: #30243f88;
+      font-size: .75rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+    .card-body { padding: 16px; }
+    .person-heading { display: flex; align-items: baseline; gap: 7px; }
+    .person-heading h3 { margin: 0; font-size: 1.16rem; }
+    .person-heading span { font-size: 1rem; }
+    .location { margin: 5px 0 10px; color: var(--muted); font-size: .86rem; }
+    .bio { min-height: 42px; margin: 0 0 14px; color: #554b60; font-size: .9rem; line-height: 1.45; }
+    .card-actions { display: flex; gap: 9px; }
+    .card-actions .button { flex: 1; padding-inline: 8px; }
+
+    .empty {
+      padding: 50px 20px;
+      border: 1px dashed #d9cfee;
+      border-radius: 22px;
+      color: var(--muted);
+      text-align: center;
+      background: #ffffff99;
+    }
+    .empty strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 1.1rem; }
+
+    .registration {
+      max-width: 650px;
+      margin: 48px auto;
+      padding: clamp(22px, 5vw, 38px);
+    }
+    .registration h1 { margin: 0 0 8px; letter-spacing: -.05em; }
+    .registration > p { margin: 0 0 24px; color: var(--muted); line-height: 1.5; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+    .span-2 { grid-column: 1 / -1; }
+    .photo-preview {
+      display: none;
+      width: 90px;
+      height: 90px;
+      margin-top: 6px;
+      border-radius: 18px;
+      object-fit: cover;
+    }
+    .fine-print { margin: 14px 0 0; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+
+    dialog {
+      width: min(470px, calc(100vw - 28px));
+      padding: 0;
+      border: 0;
+      border-radius: 24px;
+      color: var(--ink);
+      background: transparent;
+    }
+    dialog::backdrop { background: #21172d99; backdrop-filter: blur(5px); }
+    .call-dialog { padding: 22px; }
+    .call-dialog h2 { margin: 0 0 5px; }
+    .call-dialog p { color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .call-video {
+      width: 100%;
+      max-height: 280px;
+      margin: 10px 0;
+      border-radius: 16px;
+      background: #251b32;
+      object-fit: cover;
+    }
+    .call-actions { display: flex; gap: 10px; }
+    .call-actions button { flex: 1; }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+      .filters { order: 2; }
+      .profiles { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+      .tagline { display: none; }
+    }
+    @media (max-width: 480px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .span-2 { grid-column: auto; }
+      .profiles { grid-template-columns: 1fr; }
+      .photo-wrap { height: 320px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">♥</span> MeetCute</div>
+    <div class="tagline">Good conversations start with a spark ✨</div>
+  </header>
+
+  <main>
+    <section id="registration" class="registration" hidden>
+      <h1>Make your first impression ✨</h1>
+      <p>Set up your profile to discover people nearby. MeetCute is for adults 18 and older.</p>
+
+      <form id="profile-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">First name</label>
+            <input id="name" name="name" required maxlength="40" autocomplete="given-name" />
+          </div>
+          <div class="field">
+            <label for="age">Age (18+)</label>
+            <input id="age" name="age" type="number" min="18" max="120" required />
+          </div>
+          <div class="field">
+            <label for="gender">Your gender</label>
+            <select id="gender" name="gender" required>
+              <option value="">Choose one</option>
+              <option>Woman</option>
+              <option>Man</option>
+              <option>Non-binary</option>
+              <option>Another identity</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="region">Region</label>
+            <input id="region" name="region" required maxlength="60" placeholder="e.g. North" />
+          </div>
+          <div class="field span-2">
+            <label for="location">City or area</label>
+            <input id="location" name="location" required maxlength="80" placeholder="e.g. Portland" />
+          </div>
+          <div class="field span-2">
+            <label for="bio">A little about you</label>
+            <textarea id="bio" name="bio" required maxlength="240" placeholder="Your perfect Sunday, favorite little joys, or what you're looking for…"></textarea>
+          </div>
+          <div class="field span-2">
+            <label for="photo">Profile picture</label>
+            <input id="photo" name="photo" type="file" accept="image/*" required />
+            <img id="photo-preview" class="photo-preview" alt="Profile photo preview" />
+          </div>
+        </div>
+        <button class="button full" type="submit">Create my profile ♥</button>
+        <p class="fine-print">Demo note: your profile is saved in this browser only. Don’t upload sensitive photos or personal information to a demo app.</p>
+      </form>
+    </section>
+
+    <section id="app" hidden>
+      <div class="welcome">
+        <h1>Find your kind of spark <span aria-hidden="true">💫</span></h1>
+        <p>Good people, thoughtful profiles, and a little bit of magic.</p>
+      </div>
+
+      <div class="layout">
+        <aside class="panel filters">
+          <h2>Make it your kind of match</h2>
+          <div class="field">
+            <label for="match-gender">Show me</label>
+            <select id="match-gender">
+              <option value="Anyone">Anyone</option>
+              <option>Woman</option>
+              <option>Man</option>
+              <option>Non-binary</option>
+              <option>Another identity</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Age range</label>
+            <div class="range-row">
+              <input id="age-min" type="number" min="18" max="120" value="18" aria-label="Minimum age" />
+              <input id="age-max" type="number" min="18" max="120" value="45" aria-label="Maximum age" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="match-location">City or area</label>
+            <input id="match-location" placeholder="Any location" />
+          </div>
+          <div class="field">
+            <label for="match-region">Region</label>
+            <input id="match-region" placeholder="Any region" />
+          </div>
+          <button id="apply-filters" class="button full" type="button">Update matches</button>
+          <button id="edit-profile" class="button secondary full" type="button" style="margin-top:10px">Edit my profile</button>
+        </aside>
+
+        <section>
+          <div class="discovery-head">
+            <h2>Your discovery deck</h2>
+            <span id="match-count" class="count"></span>
+          </div>
+          <div id="profiles" class="profiles"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="call-modal">
+    <div class="call-dialog">
+      <h2 id="call-title">Start a call</h2>
+      <p id="call-message"></p>
+      <video id="call-video" class="call-video" autoplay muted playsinline hidden></video>
+      <div class="call-actions">
+        <button id="start-call" class="button" type="button">Allow access</button>
+        <button id="end-call" class="button dark" type="button">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const demoProfiles = [
+      { name: "Maya", age: 27, gender: "Woman", location: "Portland", region: "Northwest", bio: "Plant parent, weekend baker, and always up for a bookstore wander.", photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85" },
+      { name: "Jordan", age: 30, gender: "Non-binary", location: "Portland", region: "Northwest", bio: "Making playlists for every occasion. Looking for kind energy and good coffee.", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85" },
+      { name: "Leo", age: 26, gender: "Man", location: "Seattle", region: "Northwest", bio: "Hiker, amateur cook, and firm believer that dogs make every day better.", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=85" },
+      { name: "Ari", age: 32, gender: "Another identity", location: "Vancouver", region: "Northwest", bio: "Artist who loves rainy walks, tiny galleries, and spontaneous road trips.", photo: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=85" },
+      { name: "Sam", age: 29, gender: "Man", location: "Portland", region: "Northwest", bio: "Big laughs, little adventures, and a mission to find the city's best tacos.", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85" }
+    ];
+
+    const registration = document.querySelector("#registration");
+    const app = document.querySelector("#app");
+    const form = document.querySelector("#profile-form");
+    const photoInput = document.querySelector("#photo");
+    const preview = document.querySelector("#photo-preview");
+    const profilesEl = document.querySelector("#profiles");
+    const modal = document.querySelector("#call-modal");
+    const callVideo = document.querySelector("#call-video");
+    let currentCallMode = "video";
+    let localStream = null;
+
+    function showScreen() {
+      const profile = JSON.parse(localStorage.getItem("meetcute-profile") || "null");
+      registration.hidden = Boolean(profile);
+      app.hidden = !profile;
+      if (profile) {
+        document.querySelector("#match-location").value = profile.location || "";
+        document.querySelector("#match-region").value = profile.region || "";
+        renderProfiles();
+      }
+    }
+
+    function escapeHTML(value = "") {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      })[char]);
+    }
+
+    function renderProfiles() {
+      const gender = document.querySelector("#match-gender").value;
+      const minAge = Number(document.querySelector("#age-min").value) || 18;
+      const maxAge = Number(document.querySelector("#age-max").value) || 120;
+      const location = document.querySelector("#match-location").value.trim().toLowerCase();
+      const region = document.querySelector("#match-region").value.trim().toLowerCase();
+
+      const matches = demoProfiles.filter(person =>
+        person.age >= minAge &&
+        person.age <= maxAge &&
+        (gender === "Anyone" || person.gender === gender) &&
+        (!location || person.location.toLowerCase().includes(location)) &&
+        (!region || person.region.toLowerCase().includes(region))
+      );
+
+      document.querySelector("#match-count").textContent =
+        `${matches.length} ${matches.length === 1 ? "person" : "people"} to discover`;
+
+      if (!matches.length) {
+        profilesEl.innerHTML = '<div class="empty"><strong>No sparks just yet</strong>Try widening your age range or location filters.</div>';
+        return;
+      }
+
+      profilesEl.innerHTML = matches.map(person => `
+        <article class="card">
+          <div class="photo-wrap">
+            <img src="${escapeHTML(person.photo)}" alt="Profile photo of ${escapeHTML(person.name)}" loading="lazy" />
+            <span class="online">● Around now</span>
+          </div>
+          <div class="card-body">
+            <div class="person-heading"><h3>${escapeHTML(person.name)}</h3><span>${person.age}</span></div>
+            <p class="location">⌖ ${escapeHTML(person.location)} · ${escapeHTML(person.region)}</p>
+            <p class="bio">${escapeHTML(person.bio)}</p>
+            <div class="card-actions">
+              <button class="button secondary" type="button" data-call="voice" data-name="${escapeHTML(person.name)}">☎ Voice</button>
+              <button class="button" type="button" data-call="video" data-name="${escapeHTML(person.name)}">▣ Video</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      profilesEl.querySelectorAll("[data-call]").forEach(button => {
+        button.addEventListener("click", () => openCall(button.dataset.call, button.dataset.name));
+      });
+    }
+
+    function openCall(mode, name) {
+      currentCallMode = mode;
+      document.querySelector("#call-title").textContent = `${mode === "video" ? "Video" : "Voice"} call · ${name}`;
+      document.querySelector("#call-message").textContent =
+        "This demo can preview your device locally. Connecting to another person requires a secure signaling server and WebRTC setup.";
+      callVideo.hidden = mode !== "video";
+      document.querySelector("#start-call").textContent = "Allow microphone and camera";
+      modal.showModal();
+    }
+
+    photoInput.addEventListener("change", () => {
+      const file = photoInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        alert("Please choose an image file.");
+        photoInput.value = "";
+        return;
+      }
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const age = Number(data.get("age"));
+      if (age < 18) {
+        alert("MeetCute is for adults 18 and older.");
+        return;
+      }
+
+      const file = photoInput.files[0];
+      if (!file) {
+        alert("Please add a profile picture.");
+        return;
+      }
+
+      // Resize the uploaded photo before saving to help avoid local storage limits.
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const size = 480;
+        const scale = Math.min(size / image.width, size / image.height, 1);
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        const profile = {
+          name: data.get("name").trim(),
+          age,
+          gender: data.get("gender"),
+          location: data.get("location").trim(),
+          region: data.get("region").trim(),
+          bio: data.get("bio").trim(),
+          photo: canvas.toDataURL("image/jpeg", 0.78)
+        };
+
+        try {
+          localStorage.setItem("meetcute-profile", JSON.stringify(profile));
+          showScreen();
+        } catch {
+          alert("That photo is too large to save in this browser. Please choose a smaller image.");
+        }
+      };
+      image.src = URL.createObjectURL(file);
+    });
+
+    document.querySelector("#apply-filters").addEventListener("click", renderProfiles);
+    document.querySelector("#match-gender").addEventListener("change", renderProfiles);
+    document.querySelector("#edit-profile").addEventListener("click", () => {
+      localStorage.removeItem("meetcute-profile");
+      form.reset();
+      preview.style.display = "none";
+      showScreen();
+    });
+
+    document.querySelector("#start-call").addEventListener("click", async () => {
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: currentCallMode === "video"
+        });
+        if (currentCallMode === "video") {
+          callVideo.srcObject = localStream;
+          callVideo.hidden = false;
+        }
+        document.querySelector("#call-message").textContent =
+          "Your device preview is active. No remote caller is connected in this demo.";
+      } catch {
+        document.querySelector("#call-message").textContent =
+          "Could not access your microphone or camera. Check browser permissions and try again.";
+      }
+    });
+
+    function stopCall() {
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      callVideo.srcObject = null;
+      modal.close();
+    }
+
+    document.querySelector("#end-call").addEventListener("click", stopCall);
+    modal.addEventListener("click", event => {
+      if (event.target === modal) stopCall();
+    });
+    modal.addEventListener("close", () => {
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      callVideo.srcObject = null;
+    });
+
+    showScreen();
+  </script>
+</body>
+</html>
